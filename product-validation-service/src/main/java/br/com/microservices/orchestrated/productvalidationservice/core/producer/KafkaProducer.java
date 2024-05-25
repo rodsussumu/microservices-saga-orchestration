@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class KafkaProducer {
+
     private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Value("${spring.kafka.topic.orchestrator}")
@@ -20,7 +21,6 @@ public class KafkaProducer {
             log.info("Sending event to topic {} with data {}", orchestratorTopic, payload);
             kafkaTemplate.send(orchestratorTopic, payload);
         } catch (Exception exception) {
-            log.error("Exception" + exception);
             log.error("Error trying to send data to topic {} with data {}", orchestratorTopic, payload);
         }
     }
