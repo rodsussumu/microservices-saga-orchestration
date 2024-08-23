@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @AllArgsConstructor
 public class InventoryService {
-    private static final String CURRENT_SOURCE = "PAYMENT_SERVICE";
+    private static final String CURRENT_SOURCE = "INVENTORY_SERVICE";
 
     private final JsonUtil jsonUtil;
     private final KafkaProducer producer;
@@ -36,7 +36,7 @@ public class InventoryService {
             updateInventory(event.getPayload());
             handleSuccess(event);
         } catch(Exception ex) {
-            log.error("Error trying to update inventory: " + ex);
+            log.error("Error trying to update inventory: ", ex);
             handleFailCurrentNotExecuted(event, ex.getMessage());
         }
         producer.sendEvent(jsonUtil.toJson(event));
@@ -44,7 +44,7 @@ public class InventoryService {
 
     private void checkCurrentValidation(Event event) {
         if (orderInventoryRepository.existsByOrderIdAndTransactionId(event.getPayload().getId(), event.getTransactionId())) {
-            throw new ValidationException("There are another transactionID for this validation");
+            throw new ValidationException("There is another transactionID for this validation");
         }
     }
 
